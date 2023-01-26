@@ -24,11 +24,13 @@ public class NEO extends SubsystemBase implements Motor {
   // already setup to accomplish this.
   public NEO(
       int deviceID,
+      boolean isInverted,
       double kP,
       double kI,
       double kD) {
 
     this.sparkMax = new CANSparkMax(deviceID, MotorType.kBrushless);
+    this.sparkMax.setInverted(isInverted);
     this.sparkMax.getPIDController().setP(kP);
     this.sparkMax.getPIDController().setI(kI);
     this.sparkMax.getPIDController().setD(kD);

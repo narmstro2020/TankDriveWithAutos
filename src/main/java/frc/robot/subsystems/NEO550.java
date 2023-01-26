@@ -5,4 +5,10 @@
 package frc.robot.subsystems;
 
 /** Add your docs here. */
-public class NEO550 {}
+public class NEO550 extends NEO{
+
+    public NEO550(int deviceID, boolean isInverted, double kP, double kI, double kD) {
+        super(deviceID, isInverted, kP, kI, kD);
+    }
+    
+}
