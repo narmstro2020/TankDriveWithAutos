@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.brushless;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.ControlType;
@@ -75,5 +75,11 @@ public class NEO extends SubsystemBase implements Motor {
   @Override
   public String getCANbus() {
     return "rio";
+  }
+
+  @Override
+  public void stop() {
+    this.sparkMax.setVoltage(0);
+    this.sparkMax.disable();    
   }
 }

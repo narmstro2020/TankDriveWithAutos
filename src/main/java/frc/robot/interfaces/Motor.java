@@ -16,6 +16,8 @@ public interface Motor{
 
     public String getCANbus();
 
+    public void stop();
+
     
 
 }
