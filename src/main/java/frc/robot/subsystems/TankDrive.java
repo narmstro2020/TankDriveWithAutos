@@ -20,7 +20,7 @@ public class TankDrive extends SubsystemBase {
 
     private final LinearVelocityMechanism leftWheels;
     private final LinearVelocityMechanism rightWheels;
-    private final Gyroscope gyroscope;
+    private final NavXGyro gyroscope;
 
     private final DifferentialDriveKinematics differentialDriveKinematics;
     private final DifferentialDrivePoseEstimator differentialDrivePoseEstimator;
@@ -43,9 +43,7 @@ public class TankDrive extends SubsystemBase {
 
         Supplier<ChassisSpeeds> robotChassisSpeedsSupplier = () -> robotCentricChassisSpeeds;
 
-        this.gyroscope = Gyroscope.getNavxMXP2(
-                initialPosition.getRotation(),
-                robotChassisSpeedsSupplier);
+        this.gyroscope = new NavXGyro(robotChassisSpeedsSupplier);
 
         this.differentialDriveKinematics = new DifferentialDriveKinematics(trackWidthMeters);
 
