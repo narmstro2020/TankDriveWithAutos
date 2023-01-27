@@ -7,11 +7,13 @@ package frc.robot.subsystems;
 import java.text.DecimalFormat;
 import java.util.function.Supplier;
 
+import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.sim.NavXPhysicsSim;
@@ -28,7 +30,6 @@ public class Gyroscope extends SubsystemBase {
     private final Supplier<Double> dXSupplier;
     private final Supplier<Double> dYSupplier;
     private final Supplier<Double> dZSupplier;
-
 
     private Gyroscope(
             Supplier<Rotation2d> yawSupplier,
@@ -78,34 +79,64 @@ public class Gyroscope extends SubsystemBase {
 
     public static Gyroscope getNavxMXP2(
             Rotation2d gyroOffset,
-            Supplier<ChassisSpeeds> chassisSpeedsSupplier) {
+            Supplier<ChassisSpeeds> chassisSpeedsSupplier,
+            String botName) {
 
-        AHRS mxp2Gyroscope = new AHRS(SPI.Port.kMXP);
-        mxp2Gyroscope.reset();
-        NavXPhysicsSim.getInstance().addAHRS(mxp2Gyroscope, chassisSpeedsSupplier);
+        if (botName == "829") {
+            AHRS mxp2Gyroscope = new AHRS(SPI.Port.kMXP);
+            mxp2Gyroscope.reset();
+            NavXPhysicsSim.getInstance().addAHRS(mxp2Gyroscope, chassisSpeedsSupplier, botName);
+            return new Gyroscope(
+                    () -> {
+                        double yawDegrees = -mxp2Gyroscope.getYaw();
+                        yawDegrees = yawDegrees < 0 ? yawDegrees + 360 : yawDegrees;
+                        return Rotation2d.fromDegrees(yawDegrees);
+                    },
+                    () -> {
+                        double pitchDegrees = -mxp2Gyroscope.getPitch();
+                        pitchDegrees = pitchDegrees < 0 ? pitchDegrees + 360 : pitchDegrees;
+                        return Rotation2d.fromDegrees(pitchDegrees);
+                    },
+                    () -> {
+                        double rollDegrees = -mxp2Gyroscope.getRoll();
+                        rollDegrees = rollDegrees < 0 ? rollDegrees + 360 : rollDegrees;
+                        return Rotation2d.fromDegrees(rollDegrees);
+                    },
+                    () -> (double) mxp2Gyroscope.getWorldLinearAccelX() * 9.8,
+                    () -> (double) mxp2Gyroscope.getWorldLinearAccelY() * 9.8,
+                    () -> (double) mxp2Gyroscope.getWorldLinearAccelZ() * 9.8,
+                    () -> (double) mxp2Gyroscope.getDisplacementX(),
+                    () -> (double) mxp2Gyroscope.getDisplacementY(),
+                    () -> (double) mxp2Gyroscope.getDisplacementZ());
+        } else {
+            WPI_Pigeon2 pigeon = new WPI_Pigeon2(23);
+            pigeon.reset();
 
-        return new Gyroscope(
-                () -> {
-                    double yawDegrees = -mxp2Gyroscope.getYaw();
-                    yawDegrees = yawDegrees < 0 ? yawDegrees + 360 : yawDegrees;
-                    return Rotation2d.fromDegrees(yawDegrees);
-                },
-                () -> {
-                    double pitchDegrees = -mxp2Gyroscope.getPitch();
-                    pitchDegrees = pitchDegrees < 0 ? pitchDegrees + 360 : pitchDegrees;
-                    return Rotation2d.fromDegrees(pitchDegrees);
-                },
-                () -> {
-                    double rollDegrees = -mxp2Gyroscope.getRoll();
-                    rollDegrees = rollDegrees < 0 ? rollDegrees + 360 : rollDegrees;
-                    return Rotation2d.fromDegrees(rollDegrees);
-                },
-                () -> (double)mxp2Gyroscope.getWorldLinearAccelX() * 9.8,
-                () -> (double)mxp2Gyroscope.getWorldLinearAccelY() * 9.8,
-                () -> (double)mxp2Gyroscope.getWorldLinearAccelZ() * 9.8,
-                () -> (double)mxp2Gyroscope.getDisplacementX(),
-                () -> (double)mxp2Gyroscope.getDisplacementY(),
-                () -> (double)mxp2Gyroscope.getDisplacementZ());
+            NavXPhysicsSim.getInstance().addPigeon(pigeon, chassisSpeedsSupplier, botName);
+            return new Gyroscope(
+                    () -> {
+                        double yawDegrees = -mxp2Gyroscope.getYaw();
+                        yawDegrees = yawDegrees < 0 ? yawDegrees + 360 : yawDegrees;
+                        return Rotation2d.fromDegrees(yawDegrees);
+                    },
+                    () -> {
+                        double pitchDegrees = -mxp2Gyroscope.getPitch();
+                        pitchDegrees = pitchDegrees < 0 ? pitchDegrees + 360 : pitchDegrees;
+                        return Rotation2d.fromDegrees(pitchDegrees);
+                    },
+                    () -> {
+                        double rollDegrees = -mxp2Gyroscope.getRoll();
+                        rollDegrees = rollDegrees < 0 ? rollDegrees + 360 : rollDegrees;
+                        return Rotation2d.fromDegrees(rollDegrees);
+                    },
+                    () -> (double) mxp2Gyroscope.getWorldLinearAccelX() * 9.8,
+                    () -> (double) mxp2Gyroscope.getWorldLinearAccelY() * 9.8,
+                    () -> (double) mxp2Gyroscope.getWorldLinearAccelZ() * 9.8,
+                    () -> (double) mxp2Gyroscope.getDisplacementX(),
+                    () -> (double) mxp2Gyroscope.getDisplacementY(),
+                    () -> (double) mxp2Gyroscope.getDisplacementZ());
+        }
+
     }
 
     @Override

@@ -30,11 +30,14 @@ public class TankDrive extends SubsystemBase {
     private DifferentialDriveWheelSpeeds differentialDriveWheelSpeeds;
     private final Field2d theField;
 
+    private final String botName;
+
     public TankDrive(
             Pose2d initialPosition,
             LinearVelocityMechanism leftWheels,
             LinearVelocityMechanism rightWheels,
-            double trackWidthMeters, Field2d theField) {
+            double trackWidthMeters, Field2d theField, String botName) {
+        this.botName = botName;
 
         this.theField = theField;
         this.differentialDriveWheelSpeeds = new DifferentialDriveWheelSpeeds();
@@ -45,7 +48,8 @@ public class TankDrive extends SubsystemBase {
 
         this.gyroscope = Gyroscope.getNavxMXP2(
                 initialPosition.getRotation(),
-                robotChassisSpeedsSupplier);
+                robotChassisSpeedsSupplier, 
+                botName);
 
         this.differentialDriveKinematics = new DifferentialDriveKinematics(trackWidthMeters);
 
@@ -92,7 +96,8 @@ public class TankDrive extends SubsystemBase {
 
     public void setRobotPosition(double leftMetersPerSecond, double rightMetersPerSecond) {
         this.differentialDriveWheelSpeeds = new DifferentialDriveWheelSpeeds(leftMetersPerSecond, rightMetersPerSecond);
-        this.robotCentricChassisSpeeds = this.differentialDriveKinematics.toChassisSpeeds(this.differentialDriveWheelSpeeds);
+        this.robotCentricChassisSpeeds = this.differentialDriveKinematics
+                .toChassisSpeeds(this.differentialDriveWheelSpeeds);
 
         this.leftWheels.setVelocityMetersPerSecond(leftMetersPerSecond);
         this.rightWheels.setVelocityMetersPerSecond(rightMetersPerSecond);
@@ -126,7 +131,12 @@ public class TankDrive extends SubsystemBase {
 
     @Override
     public void periodic() {
-        this.theField.setRobotPose(this.differentialDrivePoseEstimator.getEstimatedPosition());
+        if (botName == "829") {
+            this.theField.setRobotPose(this.differentialDrivePoseEstimator.getEstimatedPosition());
+        }
+        else{
+            this.theField.getObject(botName).setPose(this.differentialDrivePoseEstimator.getEstimatedPosition());
+        }
     }
 
 }

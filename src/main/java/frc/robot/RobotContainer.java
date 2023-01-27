@@ -16,7 +16,6 @@ import java.util.List;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -50,25 +49,31 @@ public class RobotContainer {
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
-  public RobotContainer(Field2d theField) {
+  public RobotContainer(Field2d theField, String botName, int leftCan, int rightCan, Pose2d initialPosition) {
 
     LinearVelocityMechanism leftWheels = new LinearVelocityMechanism(
-        new SparkMaxNoEnc(10, false, BrushedMotorType.CIM),
+        new SparkMaxNoEnc(leftCan, false, BrushedMotorType.CIM),
         1.0 / 6.0);
 
     LinearVelocityMechanism rightWheels = new LinearVelocityMechanism(
-        new SparkMaxNoEnc(11, true, BrushedMotorType.CIM),
+        new SparkMaxNoEnc(rightCan, true, BrushedMotorType.CIM),
         1.0 / 6.0);
 
-    Pose2d initialPosition = new Pose2d(3, 3, new Rotation2d());
-    theField.setRobotPose(initialPosition);
+
+
+    if (botName == "829") {
+      theField.setRobotPose(initialPosition);
+    } else {
+      theField.getObject(botName).setPose(initialPosition);
+    }
 
     this.tankDrive = new TankDrive(
-      initialPosition, 
-      leftWheels, 
-      rightWheels, 
-      Constants.DifferentialDriveConstants.trackWidthMeters, 
-      theField);
+        initialPosition,
+        leftWheels,
+        rightWheels,
+        Constants.DifferentialDriveConstants.trackWidthMeters,
+        theField, 
+        botName);
 
     this.tankDrive.setDefaultCommand(
         Commands.run(
@@ -78,11 +83,11 @@ public class RobotContainer {
             this.tankDrive));
 
     Pair<Command, List<Pose2d>> autoForward1 = AutoControl.getAutoCommand(Constants.Autos.forward1, tankDrive);
-
+    Pair<Command, List<Pose2d>> autoForward2 = AutoControl.getAutoCommand(Constants.Autos.forward2, tankDrive);
 
     m_chooser.setDefaultOption("Forward1", autoForward1);
-
-    SmartDashboard.putData("Auto choices", m_chooser);
+    m_chooser.addOption("Forward2", autoForward2);
+    SmartDashboard.putData(botName + " Auto choices", m_chooser);
 
     configureBindings();
   }
@@ -110,13 +115,13 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand(Field2d theField) {
+  public Command getAutonomousCommand(Field2d theField, String botName) {
     Pair<Command, List<Pose2d>> autoChoice = this.m_chooser.getSelected();
-    setTrajectory(autoChoice.getSecond(), theField);
+    setTrajectory(autoChoice.getSecond(), theField, botName);
     return autoChoice.getFirst();
   }
 
-  public void setTrajectory(List<Pose2d> poses, Field2d theField) {
-    theField.getObject("trajectory").setPoses(poses);
+  public void setTrajectory(List<Pose2d> poses, Field2d theField, String botName) {
+    theField.getObject(botName + " trajectory").setPoses(poses);
   }
 }

@@ -62,5 +62,12 @@ public final class Constants {
         globalRamsetteController,
         globalFirstPathConstraints,
         globalRemainingPathConstraints);
+
+        public static final AutoConfiguration forward2 = new AutoConfiguration(
+          "Forward2",
+          globalHashMap,
+          globalRamsetteController,
+          globalFirstPathConstraints,
+          globalRemainingPathConstraints);
   }
 }

@@ -26,10 +26,10 @@ public class NavXPhysicsSim {
 
     public void addAHRS(
             AHRS ahrs,
-            Supplier<ChassisSpeeds> chassisSpeedsSupplier) {
+            Supplier<ChassisSpeeds> chassisSpeedsSupplier, String botName) {
         if (ahrs != null) {
             AHRSSimProfile simAHRS = new AHRSSimProfile(
-                chassisSpeedsSupplier);
+                chassisSpeedsSupplier, botName);
             _simProfiles.add(simAHRS);
         }
     }

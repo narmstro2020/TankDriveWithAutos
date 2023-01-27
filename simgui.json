@@ -1,22 +1,76 @@
 {
+  "HALProvider": {
+    "Other Devices": {
+      "navX-Sensor[0]": {
+        "header": {
+          "open": true
+        }
+      }
+    }
+  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/234 Auto choices": "String Chooser",
+      "/SmartDashboard/829 Auto choices": "String Chooser",
       "/SmartDashboard/Auto choices": "String Chooser",
       "/SmartDashboard/The Field": "Field2d"
     },
     "windows": {
+      "/SmartDashboard/234 Auto choices": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/829 Auto choices": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/Auto choices": {
         "window": {
           "visible": true
         }
       },
       "/SmartDashboard/The Field": {
-        "Robot": {
+        "234": {
+          "arrowColor": [
+            0.03690887987613678,
+            0.06350523233413696,
+            0.9411764740943909,
+            255.0
+          ],
           "arrowSize": 89,
           "arrowWeight": 2.0,
           "length": 0.5,
           "weight": 1.0,
+          "width": 0.5
+        },
+        "234 trajectory": {
+          "arrowSize": 0,
+          "style": "Line"
+        },
+        "829 trajectory": {
+          "arrowSize": 0,
+          "style": "Line"
+        },
+        "Robot": {
+          "arrowColor": [
+            0.721071720123291,
+            0.9852941036224365,
+            0.08693774044513702,
+            255.0
+          ],
+          "arrowSize": 89,
+          "arrowWeight": 2.0,
+          "color": [
+            0.0,
+            0.0,
+            0.0,
+            255.0
+          ],
+          "length": 0.5,
+          "weight": 1.2000000476837158,
           "width": 0.5
         },
         "height": 8.0,
