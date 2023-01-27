@@ -14,8 +14,8 @@ import frc.robot.interfaces.Motor;
 public abstract class NoEncoder extends SubsystemBase implements Motor{
 
     protected final double maxVoltage = 12.0;
-    private double softwarePosition = 0.0;
-    private double softwareVelocity = 0.0;
+    protected double softwarePosition = 0.0;
+    protected double softwareVelocity = 0.0;
     private double lastTime = Timer.getFPGATimestamp();
 
 

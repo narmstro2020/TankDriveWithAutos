@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
@@ -14,7 +13,6 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /** Add your docs here. */
@@ -23,24 +21,23 @@ public class TankDrive extends SubsystemBase {
     private final LinearVelocityMechanism leftWheels;
     private final LinearVelocityMechanism rightWheels;
     private final Gyroscope gyroscope;
-    private final Pose2d initialPosition;
 
     private final DifferentialDriveKinematics differentialDriveKinematics;
     private final DifferentialDrivePoseEstimator differentialDrivePoseEstimator;
-    private final Field2d theField = new Field2d();
 
     private ChassisSpeeds robotCentricChassisSpeeds = new ChassisSpeeds(0, 0, 0);
 
-    private DifferentialDriveWheelSpeeds[] differentialDriveWheelSpeeds;
+    private DifferentialDriveWheelSpeeds differentialDriveWheelSpeeds;
+    private final Field2d theField;
 
     public TankDrive(
             Pose2d initialPosition,
             LinearVelocityMechanism leftWheels,
             LinearVelocityMechanism rightWheels,
-            double trackWidthMeters) {
-                
-        this.differentialDriveWheelSpeeds = new DifferentialDriveWheelSpeeds[2];
-        this.initialPosition = initialPosition;
+            double trackWidthMeters, Field2d theField) {
+
+        this.theField = theField;
+        this.differentialDriveWheelSpeeds = new DifferentialDriveWheelSpeeds();
         this.leftWheels = leftWheels;
         this.rightWheels = rightWheels;
 
@@ -59,9 +56,6 @@ public class TankDrive extends SubsystemBase {
                 this.rightWheels.getPositionMeters(),
                 initialPosition);
 
-        this.theField.setRobotPose(initialPosition);
-        SmartDashboard.putData("The Field", theField);
-
     }
 
     public DifferentialDriveKinematics getDifferentialDriveKinematics() {
@@ -73,11 +67,36 @@ public class TankDrive extends SubsystemBase {
     }
 
     public void setRobotPosition(ManualControl manualControl) {
+        this.robotCentricChassisSpeeds = new ChassisSpeeds(
+                manualControl.getRobotCentricForwardSpeed(),
+                0,
+                manualControl.getRotationSpeed());
+
+        setRobotPosition(this.robotCentricChassisSpeeds);
+        if (this.robotCentricChassisSpeeds.vxMetersPerSecond == 0
+                && this.robotCentricChassisSpeeds.vyMetersPerSecond == 0
+                && this.robotCentricChassisSpeeds.omegaRadiansPerSecond == 0) {
+            stopDrive();
+        }
     }
 
     public void setRobotPosition(ChassisSpeeds chassisSpeeds) {
         this.robotCentricChassisSpeeds = chassisSpeeds;
 
+        this.differentialDriveWheelSpeeds = differentialDriveKinematics.toWheelSpeeds(chassisSpeeds);
+
+        setRobotPosition(this.differentialDriveWheelSpeeds.leftMetersPerSecond,
+                this.differentialDriveWheelSpeeds.rightMetersPerSecond);
+
+    }
+
+    public void setRobotPosition(double leftMetersPerSecond, double rightMetersPerSecond) {
+        this.differentialDriveWheelSpeeds = new DifferentialDriveWheelSpeeds(leftMetersPerSecond, rightMetersPerSecond);
+        this.robotCentricChassisSpeeds = this.differentialDriveKinematics.toChassisSpeeds(this.differentialDriveWheelSpeeds);
+
+        this.leftWheels.setVelocityMetersPerSecond(leftMetersPerSecond);
+        this.rightWheels.setVelocityMetersPerSecond(rightMetersPerSecond);
+        updateRobotPosition();
     }
 
     public void updateRobotPosition() {
@@ -105,13 +124,9 @@ public class TankDrive extends SubsystemBase {
         rightWheels.stopMechanism();
     }
 
-    public void setTrajectory(List<Pose2d> poses) {
-        this.theField.getObject("trajectory").setPoses(poses);
-    }
-
     @Override
     public void periodic() {
-
+        this.theField.setRobotPose(this.differentialDrivePoseEstimator.getEstimatedPosition());
     }
 
 }

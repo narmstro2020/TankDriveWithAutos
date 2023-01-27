@@ -13,7 +13,7 @@ import frc.robot.subsystems.brushed.BrushedMotorType;
 /** Add your docs here. */
 public class TalonSRXEncoder extends TalonSRXNoEnc {
 
-    protected TalonSRXEncoder(
+    public TalonSRXEncoder(
             int deviceID,
             boolean isInverted,
             BrushedMotorType brushedMotorType,

@@ -7,6 +7,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants;
 
 public class ManualControl extends SubsystemBase {
     private final Supplier<Double> robotCentricForwardSpeedSupplier;
@@ -21,7 +22,7 @@ public class ManualControl extends SubsystemBase {
 
 
     public double getRobotCentricForwardSpeed() {
-        return this.robotCentricForwardSpeedSupplier.get();
+        return this.robotCentricForwardSpeedSupplier.get() * Constants.DifferentialDriveConstants.maxTranslationalSpeed;
     }
 
     public double getRobotCentricSpeed() {
@@ -30,7 +31,7 @@ public class ManualControl extends SubsystemBase {
     }
 
     public double getRotationSpeed() {
-        return this.rotationSpeedSupplier.get();
+        return this.rotationSpeedSupplier.get() * Constants.DifferentialDriveConstants.maxRotationalSpeed;
     }
 
     public static ManualControl getManualControl(

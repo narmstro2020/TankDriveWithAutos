@@ -17,7 +17,7 @@ public abstract class TalonSRXNoEnc extends NoEncoder{
     protected final TalonSRX talonSRX;
     protected final int rps;
 
-    protected TalonSRXNoEnc(
+    public TalonSRXNoEnc(
         int deviceID,
         boolean isInverted,
         BrushedMotorType brushedMotorType

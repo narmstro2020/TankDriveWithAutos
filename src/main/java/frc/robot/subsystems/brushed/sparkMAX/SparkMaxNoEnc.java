@@ -8,21 +8,20 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.subsystems.brushed.BrushedMotorType;
 import frc.robot.subsystems.brushed.NoEncoder;
 
-
 /** Add your docs here. */
-public abstract class SparkMaxNoEnc extends NoEncoder{
+public class SparkMaxNoEnc extends NoEncoder {
 
     protected final CANSparkMax sparkMax;
     protected final int rps;
 
-    protected SparkMaxNoEnc(
-        int deviceID,
-        boolean isInverted,
-        BrushedMotorType brushedMotorType
-    ){
+    public SparkMaxNoEnc(
+            int deviceID,
+            boolean isInverted,
+            BrushedMotorType brushedMotorType) {
         this.sparkMax = new CANSparkMax(deviceID, MotorType.kBrushed);
         this.sparkMax.setInverted(isInverted);
         this.rps = brushedMotorType.getRPS();
@@ -37,10 +36,13 @@ public abstract class SparkMaxNoEnc extends NoEncoder{
             rotationsPerSecondValue = -rps;
         }
 
+        this.softwareVelocity = rotationsPerSecondValue;
         double voltagePercent = rotationsPerSecondValue / rps;
         double voltage = voltagePercent * this.maxVoltage;
 
-        sparkMax.setVoltage(voltage);
+        if (RobotBase.isReal()) {
+            sparkMax.setVoltage(voltage);
+        }
     }
 
     @Override
@@ -52,7 +54,7 @@ public abstract class SparkMaxNoEnc extends NoEncoder{
     public void stop() {
         this.sparkMax.setVoltage(0);
         this.sparkMax.disable();
-        
+
     }
 
 }
