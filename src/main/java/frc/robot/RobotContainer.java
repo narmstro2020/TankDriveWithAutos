@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.AutoConfiguration;
 import frc.robot.subsystems.AutoControl;
 import frc.robot.subsystems.LinearVelocityMechanism;
 import frc.robot.subsystems.ManualControl;
@@ -14,7 +15,6 @@ import frc.robot.subsystems.brushed.sparkMAX.SparkMaxNoEnc;
 
 import java.util.List;
 
-import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -44,7 +44,7 @@ public class RobotContainer {
 
   private final ManualControl manualControl = ManualControl.getManualControl(m_driverController, 0.1, 1);
 
-  private final SendableChooser<Pair<Command, List<Pose2d>>> m_chooser = new SendableChooser<>();
+  private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -82,11 +82,9 @@ public class RobotContainer {
             },
             this.tankDrive));
 
-    Pair<Command, List<Pose2d>> autoForward1 = AutoControl.getAutoCommand(Constants.Autos.forward1, tankDrive);
-    Pair<Command, List<Pose2d>> autoForward2 = AutoControl.getAutoCommand(Constants.Autos.forward2, tankDrive);
 
-    m_chooser.setDefaultOption("Forward1", autoForward1);
-    m_chooser.addOption("Forward2", autoForward2);
+    m_chooser.setDefaultOption("Forward1", "Forward1");
+    m_chooser.addOption("Forward2", "Forward2");
     SmartDashboard.putData(botName + " Auto choices", m_chooser);
 
     configureBindings();
@@ -116,10 +114,17 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand(Field2d theField, String botName) {
-    Pair<Command, List<Pose2d>> autoChoice = this.m_chooser.getSelected();
-    setTrajectory(autoChoice.getSecond(), theField, botName);
-    return autoChoice.getFirst();
+    String autoChoice = this.m_chooser.getSelected();
+    AutoConfiguration autoConfiguration = Constants.Autos.forward1;
+    if(autoChoice == "Forward2"){
+      autoConfiguration = Constants.Autos.forward2;
+    }
+    var auto = AutoControl.getAutoCommand(autoConfiguration, tankDrive);
+    setTrajectory(auto.getSecond(), theField, botName);
+    return auto.getFirst();
   }
+
+
 
   public void setTrajectory(List<Pose2d> poses, Field2d theField, String botName) {
     theField.getObject(botName + " trajectory").setPoses(poses);

@@ -13,7 +13,6 @@ import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.sim.NavXPhysicsSim;
@@ -115,26 +114,26 @@ public class Gyroscope extends SubsystemBase {
             NavXPhysicsSim.getInstance().addPigeon(pigeon, chassisSpeedsSupplier, botName);
             return new Gyroscope(
                     () -> {
-                        double yawDegrees = -mxp2Gyroscope.getYaw();
+                        double yawDegrees = -pigeon.getYaw();
                         yawDegrees = yawDegrees < 0 ? yawDegrees + 360 : yawDegrees;
                         return Rotation2d.fromDegrees(yawDegrees);
                     },
                     () -> {
-                        double pitchDegrees = -mxp2Gyroscope.getPitch();
+                        double pitchDegrees = -pigeon.getPitch();
                         pitchDegrees = pitchDegrees < 0 ? pitchDegrees + 360 : pitchDegrees;
                         return Rotation2d.fromDegrees(pitchDegrees);
                     },
                     () -> {
-                        double rollDegrees = -mxp2Gyroscope.getRoll();
+                        double rollDegrees = -pigeon.getRoll();
                         rollDegrees = rollDegrees < 0 ? rollDegrees + 360 : rollDegrees;
                         return Rotation2d.fromDegrees(rollDegrees);
                     },
-                    () -> (double) mxp2Gyroscope.getWorldLinearAccelX() * 9.8,
-                    () -> (double) mxp2Gyroscope.getWorldLinearAccelY() * 9.8,
-                    () -> (double) mxp2Gyroscope.getWorldLinearAccelZ() * 9.8,
-                    () -> (double) mxp2Gyroscope.getDisplacementX(),
-                    () -> (double) mxp2Gyroscope.getDisplacementY(),
-                    () -> (double) mxp2Gyroscope.getDisplacementZ());
+                    () -> 0.0,
+                    () -> 0.0,
+                    () -> 0.0,
+                    () -> 0.0,
+                    () -> 0.0,
+                    () -> 0.0);
         }
 
     }

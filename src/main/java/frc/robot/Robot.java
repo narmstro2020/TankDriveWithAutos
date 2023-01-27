@@ -77,9 +77,7 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-    m_autonomousCommand = null;
-    this.robot1Command = null;
-    this.robot2Command = null;
+
   }
 
   @Override

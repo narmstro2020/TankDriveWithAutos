@@ -7,6 +7,7 @@ package frc.robot.subsystems.sim;
 import java.util.ArrayList;
 import java.util.function.Supplier;
 
+import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -26,10 +27,11 @@ public class NavXPhysicsSim {
 
     public void addAHRS(
             AHRS ahrs,
-            Supplier<ChassisSpeeds> chassisSpeedsSupplier, String botName) {
+            Supplier<ChassisSpeeds> chassisSpeedsSupplier,
+            String botName) {
         if (ahrs != null) {
             AHRSSimProfile simAHRS = new AHRSSimProfile(
-                chassisSpeedsSupplier, botName);
+                    chassisSpeedsSupplier, botName);
             _simProfiles.add(simAHRS);
         }
     }
@@ -38,6 +40,17 @@ public class NavXPhysicsSim {
         // Simulate devices
         for (SimProfile simProfile : _simProfiles) {
             simProfile.run();
+        }
+    }
+
+    public void addPigeon(
+            WPI_Pigeon2 pigeon,
+            Supplier<ChassisSpeeds> chassisSpeedsSupplier,
+            String botName) {
+        if (pigeon != null) {
+            PigeonSimProfile simPigeon = new PigeonSimProfile(
+                    chassisSpeedsSupplier, botName);
+            _simProfiles.add(simPigeon);
         }
     }
 }

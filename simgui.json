@@ -1,6 +1,11 @@
 {
   "HALProvider": {
     "Other Devices": {
+      "Pigeon 2[23]": {
+        "header": {
+          "open": true
+        }
+      },
       "navX-Sensor[0]": {
         "header": {
           "open": true
@@ -92,6 +97,12 @@
   "NetworkTables": {
     "transitory": {
       "SmartDashboard": {
+        "234 Auto choices": {
+          "open": true
+        },
+        "829 Auto choices": {
+          "open": true
+        },
         "open": true
       }
     }

@@ -27,24 +27,13 @@ public class AHRSSimProfile extends SimProfile {
                 this.yawRadiansPerSecondSupplier = () -> chassisSpeedsSupplier.get().omegaRadiansPerSecond;
                 this.rollRadiansPerSecondSupplier = () -> 0.0;
                 this.pitchRadiansPerSecondSupplier = () -> 0.0;
-                int dev = 0;
-                if (botName == "829") {
-                        dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
-                        this.simulatedYawDegrees = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
-                        this.simulatedYawDegrees.set(0.0);
-                        this.simulatedPitchDegrees = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Pitch"));
-                        this.simulatedPitchDegrees.set(0.0);
-                        this.simulatedRollDegrees = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Roll"));
-                        this.simulatedRollDegrees.set(0.0);
-                } else {
-                        dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[1]");
-                        this.simulatedYawDegrees = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
-                        this.simulatedYawDegrees.set(0.0);
-                        this.simulatedPitchDegrees = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Pitch"));
-                        this.simulatedPitchDegrees.set(0.0);
-                        this.simulatedRollDegrees = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Roll"));
-                        this.simulatedRollDegrees.set(0.0);
-                }
+                int dev = SimDeviceDataJNI.getSimDeviceHandle("navX-Sensor[0]");
+                this.simulatedYawDegrees = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Yaw"));
+                this.simulatedYawDegrees.set(0.0);
+                this.simulatedPitchDegrees = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Pitch"));
+                this.simulatedPitchDegrees.set(0.0);
+                this.simulatedRollDegrees = new SimDouble(SimDeviceDataJNI.getSimValueHandle(dev, "Roll"));
+                this.simulatedRollDegrees.set(0.0);
 
         }
 
